@@ -300,6 +300,10 @@ public class GeneratePresetImpl implements GeneratePreset {
         for (Unit unit : sortedList) {
             int maxUnits = Math.min(remainingPoints / unit.getCost(), maxUnitsDefault);
             for (int i = 0; i < maxUnits; i++) {
+
+                remainingPoints -= unit.getCost();
+                if (remainingPoints < unit.getCost()) break;
+
                 newList.add(new Unit(
                         unit.getName()+ " " + String.valueOf(i),
                         unit.getUnitType(),
@@ -312,8 +316,6 @@ public class GeneratePresetImpl implements GeneratePreset {
                         0,
                         0));
 
-                remainingPoints -= unit.getCost();
-                if (remainingPoints < unit.getCost()) break;
             }
         }
 
