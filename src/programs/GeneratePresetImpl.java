@@ -4,6 +4,7 @@ import com.battle.heroes.army.Army;
 import com.battle.heroes.army.Unit;
 import com.battle.heroes.army.programs.GeneratePreset;
 
+import java.io.IOException;
 import java.util.*;
 
 public class GeneratePresetImpl implements GeneratePreset {
@@ -16,7 +17,7 @@ public class GeneratePresetImpl implements GeneratePreset {
 
         // Ваше решение
         System.out.print("\033\143");
-        System.out.println("generate started");
+        System.out.println("generate started\nsortred list");
 
 
 
@@ -28,6 +29,28 @@ public class GeneratePresetImpl implements GeneratePreset {
 
         List<Unit> sortedList;
         sortedList = new ArrayList<>(unitList);
+
+//        List<Unit> sortedList = new ArrayList<>(Comparator.comparingDouble(unit -> {
+//            Unit instance = (Unit) unit;
+//            return (double) instance.getBaseAttack() / instance.getCost() + (double) instance.getHealth() / instance.getCost();
+//        })).reversed();
+//
+//        List<Unit> sortedList = new List<Unit>(Comparator.comparingDouble((Unit::getBaseAttack / (double)Unit::getCost) + Unit::getHealth/Unit::getCost)).reversed();
+
+//        List<Unit> sortedList = new ArrayList<Unit>((Collection) Comparator.comparingDouble(unit -> {
+//            Unit instance = (Unit) unit;
+//            return (double) instance.getBaseAttack() / instance.getCost() + (double) instance.getHealth() / instance.getCost();
+//        })).reversed();
+
+//            List<Unit> sortedList = new ArrayList<>(Comparator.comparingDouble(unit -> {
+//                Unit instance = (Unit) unit;
+//                return (double) instance.getBaseAttack() / instance.getCost() + (double) instance.getHealth() / instance.getCost();
+//            })).reversed();
+
+//        List<Unit> sortedList = new ArrayList<Unit>((Collection) Comparator.comparingDouble(unit -> (
+//                (double) unit.getBaseAttack() / unit.getCost() + (double) unit.getHealth() / unit.getCost()
+//                )).reversed());
+
 
         System.out.println("Количество юнитов: " + unitList.size());
         System.out.println("Количество очков: " + maxPoints);
@@ -157,23 +180,116 @@ public class GeneratePresetImpl implements GeneratePreset {
         newList.stream().forEach(unit -> System.out.println(unit.getName() + " " + unit.getCost()+ " x = " + unit.getxCoordinate() + " y = " + unit.getyCoordinate() + "\n"));
 */
 
-        sortedList.sort((unit1, unit2) -> {
-            double efficiency1 = (double)unit1.getBaseAttack() / (double)unit1.getCost();
-            double efficiency2 = (double)unit2.getBaseAttack() / (double)unit2.getCost();
-            if (Double.compare(efficiency2, efficiency1) != 0) {
-                System.out.println("BaseAttack/Cost сортирую " + unit1.toString() + " и " + unit2.toString());
+//        sortedList.sort((unit1, unit2) -> {
+//            double efficiency1 = (double)unit1.getBaseAttack() / (double)unit1.getCost();
+//            double efficiency2 = (double)unit2.getBaseAttack() / (double)unit2.getCost();
+//            if (Double.compare(efficiency2, efficiency1) != 0) {
+//                System.out.println("BaseAttack/Cost сортирую " + unit1.toString() + " и " + unit2.toString());
+//
+//                return Double.compare(efficiency2, efficiency1);
+//            } else {
+//                double efficiency3 = (double)unit1.getHealth() / (double)unit1.getCost();
+//                double efficiency4 = (double)unit2.getHealth() / (double)unit2.getCost();
+//                System.out.println("Health/Cost сортирую " + unit1.toString() + " и " + unit2.toString());
+//
+//                return Double.compare(efficiency4, efficiency3);
+//            }
+//        });
 
-                return Double.compare(efficiency2, efficiency1);
-            } else {
-                double efficiency3 = (double)unit1.getHealth() / (double)unit1.getCost();
-                double efficiency4 = (double)unit2.getHealth() / (double)unit2.getCost();
-                System.out.println("Health/Cost сортирую " + unit1.toString() + " и " + unit2.toString());
+//        sortedList.sort(Comparator.comparingDouble(unit -> {
+//            double efficiency1 = (double)unit.getBaseAttack() / (double)unit.getCost();
+//            double efficiency2 = (double)unit.getHealth() / (double)unit.getCost();
+//            return efficiency1 + efficiency2;
+//        }).reversed());
 
-                return Double.compare(efficiency4, efficiency3);
-            }
-        });
+//        SUITABLE CASE
+//        sortedList.sort(Comparator.comparingDouble( u -> ((double) u.getBaseAttack()) ));
+
+        System.out.println("\n\nUNSORTED:\n");
+        sortedList.stream().forEach(unit -> System.out.println(
+                "Unit: " + unit.getUnitType() + "\t" +
+                "Cost\t" + unit.getCost()+"\t" +
+                "Attack\t" + unit.getBaseAttack() + "\t" +
+                "\tHealth\t" + unit.getHealth() + "\n" +
+                "\tBaseAttack at Cost\t" +
+                (double) unit.getBaseAttack() / (double)unit.getCost() + "\n" +
+                "\tHealth at Cost\t\t" +
+                (double)unit.getHealth() / (double)unit.getCost() + "\n" +
+                "\tEfficiency\t\t\t\t" +
+                ((double) unit.getBaseAttack() / (double)unit.getCost() + (double)unit.getHealth() / (double)unit.getCost()) +
+                "\n"
+        ));
+
+
+        sortedList.sort(Comparator.comparingDouble( u -> {
+            double efficiency1 = (double)u.getBaseAttack() / (double)u.getCost();
+            double efficiency2 = (double)u.getHealth() / (double)u.getCost();
+            return efficiency1 + efficiency2;
+//            return (double) u.getBaseAttack();
+        }) );
+
+//        System.out.println("SORTED unitlist:");
+//        sortedList.stream().forEach(unit -> System.out.println(
+//                unit.getUnitType() + " " +
+//                        unit.getCost()+"\n" +
+//                        (double) unit.getBaseAttack() / (double)unit.getCost() + " " +
+//                        (double)unit.getHealth() / (double)unit.getCost() +
+//                        "\n\n"));
+        System.out.println("\n\nSORTED unitlist:\n");
+        sortedList.stream().forEach(unit -> System.out.println(
+                "Unit: " + unit.getUnitType() + "\t" +
+                "Cost\t" + unit.getCost()+"\t" +
+                "Attack\t" + unit.getBaseAttack() + "\t" +
+                "\tHealth\t" + unit.getHealth() + "\n" +
+                "\tBaseAttack at Cost\t" +
+                (double) unit.getBaseAttack() / (double)unit.getCost() + "\n" +
+                "\tHealth at Cost\t\t" +
+                (double)unit.getHealth() / (double)unit.getCost() + "\n" +
+                "\tEfficiency\t\t\t\t" +
+                ((double) unit.getBaseAttack() / (double)unit.getCost() + (double)unit.getHealth() / (double)unit.getCost()) +
+                "\n"
+        ));
+
+        Collections.reverse(sortedList);
+
+//        System.out.println("reversed:");
+//        sortedList.stream().forEach(unit -> System.out.println(
+//                unit.getUnitType() + " " +
+//                        unit.getCost()+"\n" +
+//                        (double) unit.getBaseAttack() / (double)unit.getCost() + " " +
+//                        (double)unit.getHealth() / (double)unit.getCost() +
+//                        "\n\n"));
+        System.out.println("\n\nreversed:\n");
+        sortedList.stream().forEach(unit -> System.out.println(
+                "Unit: " + unit.getUnitType() + "\t" +
+                "Cost\t" + unit.getCost()+"\t" +
+                "Attack\t" + unit.getBaseAttack() + "\t" +
+                "\tHealth\t" + unit.getHealth() + "\n" +
+                "\tBaseAttack at Cost\t" +
+                (double) unit.getBaseAttack() / (double)unit.getCost() + "\n" +
+                "\tHealth at Cost\t\t" +
+                (double)unit.getHealth() / (double)unit.getCost() + "\n" +
+                "\tEfficiency\t\t\t\t" +
+                ((double) unit.getBaseAttack() / (double)unit.getCost() + (double)unit.getHealth() / (double)unit.getCost()) +
+                "\n"
+        ));
+        stopPrint();
+//
+//            double efficiency1 = (double)unit.getBaseAttack() / (double)unit.getCost();
+//            double efficiency2 = (double)unit.getHealth() / (double)unit.getCost();
+//            return efficiency1 + efficiency2;
+//        }).reversed());
+
+
+        // Sort units by efficiency: attack/cost and health/cost
+        // sortedList.sort(Comparator.comparingDouble(unit -> -((double) unit.getBaseAttack() / unit.getCost() + (double) unit.getHealth() / unit.getCost())));
+
+
 
         sortedList.stream().forEach(unit -> System.out.println(unit.getUnitType() + " " + unit.getCost()+"\n"+ (double)unit.getBaseAttack() / (double)unit.getCost() + " " + (double)unit.getHealth() / (double)unit.getCost() + "\n\n"));
+
+
+
 
         System.out.println();
         System.out.println();
@@ -228,5 +344,19 @@ public class GeneratePresetImpl implements GeneratePreset {
 
 //        army.setUnits(newList);
         return army;
+    }
+
+    public void stopPrint(){
+        int inChar;
+        String s = "";
+        try {
+            inChar = System.in.read();
+            while (System.in.available() > 0) {
+                s += (char) inChar;
+                inChar = System.in.read();
+            }
+        } catch (IOException e) {
+            System.out.println("Ошибка");
+        }
     }
 }
